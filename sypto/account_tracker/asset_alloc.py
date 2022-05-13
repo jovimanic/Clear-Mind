@@ -1,12 +1,12 @@
 import ccxt
 
-def asset_allocation():
+def asset_allocation(api,sec):
 	binance = ccxt.binance()
 	exchange_id = 'binance'
 	exchange_class = getattr(ccxt, exchange_id)
 	exchange = exchange_class({
-		'apiKey' : '2Zuss4JKwsrMrq4DoG7Y8avsj9CA538S1NSd2sgT3JUE4LXO8gwKOV7IPUNjRb6z',
-		'secret' : 'G4Eo2iGX1Nh1vIDMNRnAFEuBXFsHQem7Kq7XtRvU5G3BeKXSBTwmqeV2aSiL3Jff'
+		'apiKey' : api,
+		'secret' : sec
 		})
 	
 	available = exchange.fetch_balance()
@@ -37,8 +37,11 @@ def asset_allocation():
 	
 	print(total_holding)
 	
+	
 if __name__ == '__main__':
-	asset_allocation()
+	api = '2Zuss4JKwsrMrq4DoG7Y8avsj9CA538S1NSd2sgT3JUE4LXO8gwKOV7IPUNjRb6z'
+	sec = 'G4Eo2iGX1Nh1vIDMNRnAFEuBXFsHQem7Kq7XtRvU5G3BeKXSBTwmqeV2aSiL3Jff'
+	asset_allocation(api,sec)
 
 	
 	
