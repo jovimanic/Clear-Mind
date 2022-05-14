@@ -11,15 +11,15 @@ def month_calc(timestamp):
 	month = datem.month
 	return month
 	
-def get_sorted_trades():
+def get_sorted_trades(api,sec):
 	exchange_id = 'binance'
 	exchange_class = getattr(ccxt, exchange_id)
 	exchange = exchange_class({
-		'apiKey' : 'aFCprSG0d4LZk5cLaFb9uxNLKZOEdqNdrTKUQx6q6IiKX6v6FPeSmAfqSugtgHdJ',
-		'secret' : 'ProO0feSKcClt0xcp13a0gK7RWFwcrNi6gZIhbHX6SIYmKkB2CS0juBie215v1dY'
+		'apiKey' : api,
+		'secret' : sec
 		})
 		
-	sorted_trades = []
+	sorted_trades = [] 
 		
 	for c in coins.keys():
 		s = c+'/USDT'
@@ -37,6 +37,7 @@ def get_sorted_trades():
 def profit_and_loss(sorted_trades):
 	monthly_coin_status = []
 	profits = []
+	flag = -1
 	for i in range(12):
 		monthly_coin_status.append([0,0,0,0,0])
 		profits.append([0,0,0,0,0])
@@ -47,11 +48,16 @@ def profit_and_loss(sorted_trades):
 		month = orders[1]
 		month -= 1
 		amount = orders[4]
+		for i in range(5):
+			if month != flag:
+				monthly_coin_status[month][i] = monthly_coin_status[month-1][i]
+				
 		if side == 'buy':
 			monthly_coin_status[month][coins[coin]] += amount
 		else:
 			profits[month][coins[coin]] += (amount - monthly_coin_status[month][coins[coin]])
 			monthly_coin_status[month][coins[coin]] = 0
+		flag = month
 			
 	return monthly_coin_status,profits
 	
@@ -64,9 +70,6 @@ def chargeable_amount(mcs,p):
 		for i in p[month]:
 			profit += i
 		reccur[0] -= profit
-		for i in mcs[month]:
-			if i > 0:
-				reccur[0] += i
 				
 		if reccur[0] < 0:
 			c[month] = -0.1*reccur[0]
@@ -75,7 +78,9 @@ def chargeable_amount(mcs,p):
 	return c
 
 if __name__ == '__main__':
-	sorted_trades = get_sorted_trades()
+	api = 'aFCprSG0d4LZk5cLaFb9uxNLKZOEdqNdrTKUQx6q6IiKX6v6FPeSmAfqSugtgHdJ'
+	sec = 'ProO0feSKcClt0xcp13a0gK7RWFwcrNi6gZIhbHX6SIYmKkB2CS0juBie215v1dY'
+	sorted_trades = get_sorted_trades(api,sec)
 	monthly_coin_status,profits = profit_and_loss(sorted_trades)
 	charge = chargeable_amount(monthly_coin_status,profits)
 	print(charge)
