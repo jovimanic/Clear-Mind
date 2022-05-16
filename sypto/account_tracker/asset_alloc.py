@@ -35,13 +35,15 @@ def asset_allocation(api,sec):
 	for i in total_holding:
 		total_holding[i] = total_holding[i]/total_USDT*100
 	
-	print(total_holding)
+	return total_holding
 	
+def main(api,sec):
+	#api = '2Zuss4JKwsrMrq4DoG7Y8avsj9CA538S1NSd2sgT3JUE4LXO8gwKOV7IPUNjRb6z'
+	#sec = 'G4Eo2iGX1Nh1vIDMNRnAFEuBXFsHQem7Kq7XtRvU5G3BeKXSBTwmqeV2aSiL3Jff'
+	asset_allocation(api,sec)
 	
 if __name__ == '__main__':
-	api = '2Zuss4JKwsrMrq4DoG7Y8avsj9CA538S1NSd2sgT3JUE4LXO8gwKOV7IPUNjRb6z'
-	sec = 'G4Eo2iGX1Nh1vIDMNRnAFEuBXFsHQem7Kq7XtRvU5G3BeKXSBTwmqeV2aSiL3Jff'
-	asset_allocation(api,sec)
+	main(api,sec)
 
 	
 	
