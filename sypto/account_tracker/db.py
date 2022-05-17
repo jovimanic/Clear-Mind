@@ -26,7 +26,7 @@ users = db.user
 for doc in users.find():
 	if 'user_apikey' not in doc or 'created_at' not in doc:
 		continue
-	obj_id = doc['_id']
+	obj_id = str(doc['_id'])
 	name = doc['name']
 	email = doc['email']
 	api = doc['user_apikey']
@@ -46,9 +46,16 @@ for doc in users.find():
 		
 	asset_alloc_amt = json(total_holding)
 	
-	dt = datetime.now()
+	unreal_profit_per_coin,total_unreal_profit,realised_profits_per_coin, total_realised_profit = unrealised_profit.main(api,sec)
 	
-	unreal_profit_per_coin,total_unreal_profit = unrealised_profit.main(api,sec)
+	dt = datetime.now()
+	date = str(dt)
+	datem = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+	month = datem.month
+	day = datem.day
+	
+	real_profit_per_coin, total_real_profit = realised_profit.main(api,sec)
+	
 	
 		
 		
