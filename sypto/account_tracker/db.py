@@ -2,6 +2,10 @@ import psycopg2
 from pymongo import MongoClient
 import asset_alloc
 from datetime import datetime
+import temp
+import asset_alloc
+import json
+import unrealised_profit
 
 #try:
 
@@ -18,26 +22,37 @@ client = MongoClient('mongodb+srv://ravi0802:ravi1234@cluster0.c5w6y.mongodb.net
 db = client.myFirstDatabase
 users = db.user
 
-command = "CREATE TABLE master ( id SERIAL PRIMARY KEY, email VARCHAR NOT NULL, user_apikey VARCHAR NOT NULL, user_secretkey VARCHAR NOT NULL, exchange VARCHAR(255) NOT NULL, strategy VARCHAR NOT NULL, name VARCHAR NOT NULL, created_at DATE, user_balance INT)"
 
-cursor.execute(command)
 for doc in users.find():
 	if 'user_apikey' not in doc or 'created_at' not in doc:
 		continue
+	obj_id = doc['_id']
 	name = doc['name']
 	email = doc['email']
 	api = doc['user_apikey']
+	api = temp.decrypt(api)
 	sec = doc['user_secretkey']
+	sec = temp.decrypt(api)
 	exchange = doc['user_exchange']
 	strategy = doc['user_strategy']
-	created_date = doc['created_at']
-	balance = doc['user_balance']
+	
+	asset_alloc_percent = json(asset_alloc.main(api,sec))
+	
+	today_price,quantity = asset_alloc.asset_allocation(api,sec)
+	
+	total_holding = {}	
+	for i in quantity:
+		total_holding[i] = quantity[i]*today_price[i]
+		
+	asset_alloc_amt = json(total_holding)
 	
 	dt = datetime.now()
-	timestamp = datetime.timestamp(dt)
+	
+	unreal_profit_per_coin,total_unreal_profit = unrealised_profit.main(api,sec)
+	
 		
 		
-	command = " INSERT INTO master(email,user_apikey,user_secretkey,exchange,strategy,name,created_at,user_balance) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
+	command = "INSERT INTO master(email,user_apikey,user_secretkey,exchange,strategy,name,created_at,user_balance) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
 	
 	#record = (str(email),str(api),str(sec),str(exchange),str(strategy))
 		

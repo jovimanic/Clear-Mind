@@ -23,6 +23,10 @@ def asset_allocation(api,sec):
 			price[i] = 1.0
 			continue
 		price[i] = binance.fetch_ticker(val)['close']
+		
+	return price,quantity
+	
+def find_total(price,quantity):
 
 	total_holding = {}	
 	for i in quantity:
@@ -40,7 +44,10 @@ def asset_allocation(api,sec):
 def main(api,sec):
 	#api = '2Zuss4JKwsrMrq4DoG7Y8avsj9CA538S1NSd2sgT3JUE4LXO8gwKOV7IPUNjRb6z'
 	#sec = 'G4Eo2iGX1Nh1vIDMNRnAFEuBXFsHQem7Kq7XtRvU5G3BeKXSBTwmqeV2aSiL3Jff'
-	asset_allocation(api,sec)
+	price,quantity = asset_allocation(api,sec)
+	total = find_total(price,quantity)
+	
+	return total
 	
 if __name__ == '__main__':
 	main(api,sec)
