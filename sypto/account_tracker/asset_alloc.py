@@ -1,8 +1,9 @@
 import ccxt
 
-def asset_allocation(api,sec):
+def asset_allocation(api,sec,exchange1):
 	binance = ccxt.binance()
-	exchange_id = 'binance'
+	wazirx = ccxt.wazirx()
+	exchange_id = exchange1
 	exchange_class = getattr(ccxt, exchange_id)
 	exchange = exchange_class({
 		'apiKey' : api,
@@ -13,6 +14,8 @@ def asset_allocation(api,sec):
 	total = available['total']
 	quantity = {}
 	for i in total:
+		if i == 'INR':
+			continue
 		if total[i] != 0.0:
 			quantity[i] = total[i]
 		
@@ -22,7 +25,10 @@ def asset_allocation(api,sec):
 		if i == 'USDT':
 			price[i] = 1.0
 			continue
-		price[i] = binance.fetch_ticker(val)['close']
+		if exchange1 == 'binance':
+			price[i] = binance.fetch_ticker(val)['close']
+		else:
+			price[i] = wazirx.fetch_ticker(val)['close']
 		
 	return price,quantity
 	
@@ -41,10 +47,10 @@ def find_total(price,quantity):
 	
 	return total_holding
 	
-def main(api,sec):
+def main(api,sec,exchange):
 	#api = '2Zuss4JKwsrMrq4DoG7Y8avsj9CA538S1NSd2sgT3JUE4LXO8gwKOV7IPUNjRb6z'
 	#sec = 'G4Eo2iGX1Nh1vIDMNRnAFEuBXFsHQem7Kq7XtRvU5G3BeKXSBTwmqeV2aSiL3Jff'
-	price,quantity = asset_allocation(api,sec)
+	price,quantity = asset_allocation(api,sec,exchange)
 	total = find_total(price,quantity)
 	
 	return total

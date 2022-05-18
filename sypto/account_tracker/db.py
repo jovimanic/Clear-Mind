@@ -24,52 +24,53 @@ users = db.user
 
 
 for doc in users.find():
-	try:
-		if 'user_apikey' not in doc or 'user_secretkey' not in doc:
-			continue
-		obj_id = str(doc['_id'])
-		name = doc['name']
-		email = doc['email']
-		api = doc['user_apikey']
-		#print(api, name)
-		api = decode.decrypt(api)
-		#api = 'aFCprSG0d4LZk5cLaFb9uxNLKZOEdqNdrTKUQx6q6IiKX6v6FPeSmAfqSugtgHdJ'
-		sec = doc['user_secretkey']
-		sec = decode.decrypt(sec)
-		#sec = 'ProO0feSKcClt0xcp13a0gK7RWFwcrNi6gZIhbHX6SIYmKkB2CS0juBie215v1dY'
-		exchange = doc['user_exchange']
-		strategy = doc['user_strategy']
-		
-		asset_alloc_percent = json.dumps(asset_alloc.main(api,sec))
-		
-		today_price,quantity = asset_alloc.asset_allocation(api,sec)
-		
-		total_holding = {}	
-		for i in quantity:
-			total_holding[i] = quantity[i]*today_price[i]
-			
-		asset_alloc_amt = json.dumps(total_holding)
-		
-		unreal_profit_per_coin,total_unreal_profit,realised_profits_per_coin, total_realised_profit = unrealised_and_realised_profit.main(api,sec)
-		
-		dt = datetime.now()
-		date = str(dt)
-		datem = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
-		month = datem.month
-		day = datem.day
-		
-		
-		print(email,"	",name,"	",strategy,"	",exchange,"	",asset_alloc_percent,"	",asset_alloc_amt,"		",unreal_profit_per_coin,"	",total_unreal_profit,"		",realised_profits_per_coin,"		",total_realised_profit,"	",date,"\n")		
-	
-	except Exception as e:
-		print(e)
-		print(api,sec)
-		print(name)
+	if 'user_apikey' not in doc or 'user_secretkey' not in doc:
 		continue
+	obj_id = str(doc['_id'])
+	name = doc['name']
+	email = doc['email']
+	api = doc['user_apikey']
+	#print(api, name)
+	api = decode.decrypt(api)
+	api = '0la61y5gXanIWM4pBKHUkP3unDyyKQaqzsAF10KExjugrdNCOI18T62HJjp7kJKr'
+	sec = doc['user_secretkey']
+	sec = decode.decrypt(sec)
+	sec = 'a2OtTFEKCBFKWReJqt8VJj7QJOa7Vj5WOMahZJQm'
+	exchange = doc['user_exchange']
+	exchange = 'wazirx'
+	strategy = doc['user_strategy']
+		
+	asset_alloc_percent = json.dumps(asset_alloc.main(api,sec,exchange))
+		
+	today_price,quantity = asset_alloc.asset_allocation(api,sec,exchange)
+		
+	total_holding = {}	
+	for i in quantity:
+		total_holding[i] = quantity[i]*today_price[i]
+			
+	asset_alloc_amt = json.dumps(total_holding)
 	
+	unreal_profit_per_coin,total_unreal_profit,realised_profits_per_coin, total_realised_profit = unrealised_and_realised_profit.main(api,sec,exchange)
+		
+	unreal_profit_per_coin = json.dumps(unreal_profit_per_coin)
+		
+	realised_profits_per_coin = json.dumps(realised_profits_per_coin)
+		
+	dt = datetime.now()
+	date = str(dt)
+	datem = datetime.strptime(date, "%Y-%m-%d %H:%M:%S.%f")
+	month = datem.month
+	day = datem.day
+		
+		#command = "INSERT INTO master(id,email,name,strategy,exchange,asset_allocation_amount,asset_alloc_percent,unrealised_profit_total,unrealised_profit_per_coin,realised_profit_total,realised_profit_per_coin,date) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+		
+		#cursor.execute(command,(obj_id,email,name,strategy,exchange,asset_alloc_amt,asset_alloc_percent,total_unreal_profit,unreal_profit_per_coin,total_realised_profit,realised_profits_per_coin,date))
 		
 		
-	command = "INSERT INTO master(email,name,strategy) VALUES(%s,%s,%s,%s,%s,%s,%s,%s)"
+		
+		
+	print(email,"	",name,"	",strategy,"	",exchange,"	",asset_alloc_percent,"	",asset_alloc_amt,"		",unreal_profit_per_coin,"	",total_unreal_profit,"		",realised_profits_per_coin,"		",total_realised_profit,"	",date,"\n")		
+	
 	
 	#record = (str(email),str(api),str(sec),str(exchange),str(strategy))
 		
