@@ -79,7 +79,8 @@ def unreal_and_real_profit(api,sec,exchange1):
 	exchange_class = getattr(ccxt, exchange_id)
 	exchange = exchange_class({
 		'apiKey' : api,
-		'secret' : sec
+		'secret' : sec,
+		'enableRateLimit': True
 		})
 			
 	sorted_trades = []
@@ -120,7 +121,7 @@ def unreal_and_real_profit(api,sec,exchange1):
 		buying_price[c] = buy
 		sorted_trades = []
 			
-		get_realised_profits(sorted_trades,coin,realised_profits)
+		get_realised_profits(sorted_trades,c,realised_profits)
 			
 			
 			

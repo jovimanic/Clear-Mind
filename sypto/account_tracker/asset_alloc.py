@@ -7,7 +7,8 @@ def asset_allocation(api,sec,exchange1):
 	exchange_class = getattr(ccxt, exchange_id)
 	exchange = exchange_class({
 		'apiKey' : api,
-		'secret' : sec
+		'secret' : sec,
+		'enableRateLimit': True
 		})
 	
 	available = exchange.fetch_balance()
@@ -57,9 +58,3 @@ def main(api,sec,exchange):
 	
 if __name__ == '__main__':
 	main(api,sec)
-
-	
-	
-	
-	
-		
