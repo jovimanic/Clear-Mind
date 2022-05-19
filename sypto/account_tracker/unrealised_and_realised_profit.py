@@ -2,7 +2,8 @@ import ccxt
 from datetime import  datetime
 from datetime import timedelta
 import asset_alloc
-import test
+import wazirx_trades
+import time
 
 
 
@@ -71,30 +72,32 @@ def get_realised_profits(sorted_trades,coin,realised_profits):
 	realised_profits[coin] = sp-cp
 	
 				
-def unreal_and_real_profit(api,sec,exchange1):
-	today_price,quantity = asset_alloc.asset_allocation(api,sec,exchange1)
+def unreal_and_real_profit(api,sec,exchange1,today_price,quantity):
 	
 	coins = {'BTC':0,'ETH':1,'XRP':2,'ADA':3, 'SOL':4}	
-	exchange_id = exchange1
-	exchange_class = getattr(ccxt, exchange_id)
-	exchange = exchange_class({
-		'apiKey' : api,
-		'secret' : sec,
-		'enableRateLimit': True
-		})
+	if exchange1 == 'binance':
+		exchange_id = exchange1
+		exchange_class = getattr(ccxt, exchange_id)
+		exchange = exchange_class({
+			'apiKey' : api,
+			'secret' : sec
+			})
 			
 	sorted_trades = []
 	
 	buying_price = {}
 		
 	realised_profits = {}
-	print(exchange)
+	#print(exchange1)
 	for c in coins.keys():
+		#print('h1')
 		s = c+'/USDT'
 		if exchange1 == 'binance':
 			trades = exchange.fetch_my_trades(symbol=s, since=None, limit=None, params={})
 		else:
-			trades = test.get_wazirx_trades(api,sec)
+			time.sleep(1)
+			trades = wazirx_trades.get_wazirx_trades(api,sec,s)
+
 			
 		for orders in trades:
 			timestamp = orders['timestamp']
@@ -152,10 +155,10 @@ def unreal_and_real_profit(api,sec,exchange1):
 			
 	return unreal_profits,total_profits,realised_profits,total_real
 		
-def main(api,sec,exchange):
+def main(api,sec,exchange,today_price,quantity):
 	#api = 'aFCprSG0d4LZk5cLaFb9uxNLKZOEdqNdrTKUQx6q6IiKX6v6FPeSmAfqSugtgHdJ'
 	#sec = 'ProO0feSKcClt0xcp13a0gK7RWFwcrNi6gZIhbHX6SIYmKkB2CS0juBie215v1dY'
-	return unreal_and_real_profit(api,sec,exchange)
+	return unreal_and_real_profit(api,sec,exchange,today_price,quantity)
 	
 		
 if __name__ ==  '__main__':

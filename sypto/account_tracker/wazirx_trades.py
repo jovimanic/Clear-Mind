@@ -1,6 +1,6 @@
 import ccxt
 
-def get_wazirx_trades(api,sec):
+def get_wazirx_trades(api,sec,s):
 
 	exchange_id = 'wazirx'
 
@@ -10,5 +10,5 @@ def get_wazirx_trades(api,sec):
 		'secret' : sec
 		})
 	
-	return exchange.fetch_orders('ETH/USDT')
+	return exchange.fetch_orders(s)
 	

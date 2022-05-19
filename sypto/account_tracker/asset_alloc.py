@@ -1,14 +1,18 @@
 import ccxt
+import time
 
 def asset_allocation(api,sec,exchange1):
+	if exchange1 == 'wazirx':
+		time.sleep(1)
+		
 	binance = ccxt.binance()
 	wazirx = ccxt.wazirx()
+	#print('asset alloc prob')
 	exchange_id = exchange1
 	exchange_class = getattr(ccxt, exchange_id)
 	exchange = exchange_class({
 		'apiKey' : api,
-		'secret' : sec,
-		'enableRateLimit': True
+		'secret' : sec
 		})
 	
 	available = exchange.fetch_balance()
@@ -19,6 +23,8 @@ def asset_allocation(api,sec,exchange1):
 			continue
 		if total[i] != 0.0:
 			quantity[i] = total[i]
+			
+
 		
 	price = {}
 	for i in quantity:
@@ -29,7 +35,9 @@ def asset_allocation(api,sec,exchange1):
 		if exchange1 == 'binance':
 			price[i] = binance.fetch_ticker(val)['close']
 		else:
+			time.sleep(1)
 			price[i] = wazirx.fetch_ticker(val)['close']
+			
 		
 	return price,quantity
 	
