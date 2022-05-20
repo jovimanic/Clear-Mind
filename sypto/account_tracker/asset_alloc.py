@@ -2,6 +2,7 @@ import ccxt
 import time
 
 def asset_allocation(api,sec,exchange1):
+	coins = {'BTC':0,'ETH':1,'XRP':2,'ADA':3, 'SOL':4,'USDT':5}
 	if exchange1 == 'wazirx':
 		time.sleep(1)
 		
@@ -18,11 +19,14 @@ def asset_allocation(api,sec,exchange1):
 	available = exchange.fetch_balance()
 	total = available['total']
 	quantity = {}
+	
 	for i in total:
 		if i == 'INR':
 			continue
-		if total[i] != 0.0:
+		if i in coins:
 			quantity[i] = total[i]
+			
+	#print(quantity)
 			
 
 		
@@ -52,6 +56,9 @@ def find_total(price,quantity):
 		total_USDT += total_holding[i]
 	
 	for i in total_holding:
+		if total_USDT == 0.0:
+			total_holding[i] = 0
+			continue
 		total_holding[i] = total_holding[i]/total_USDT*100
 	
 	return total_holding
